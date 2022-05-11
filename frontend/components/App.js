@@ -13,6 +13,7 @@ export default class App extends React.Component {
     this.state.todoList = [];
 
     this.toggleCompleted = this.toggleCompleted.bind(this);
+    this.clearCompleted = this.clearCompleted.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -31,29 +32,23 @@ export default class App extends React.Component {
     axios.post(URL, { name: evt.target[0].value });
     axios.get(URL)
       .then(res => {
-        this.setState({
-          todoList: res.data.data,
+        this.setState((state,props) => {
+          return {todoList: res.data.data};
           });
       });
+    this.componentDidMount();
+  }
+
+  clearCompleted(evt) {
+    evt.preventDefault();
+    const uncompleted = this.state.todoList.filter(x => x.completed===false);
+    this.setState((state,props) => {
+      console.log(uncompleted);
+      return { todoList: uncompleted };
+      })
   }
 
   componentDidMount(prevProps, prevState, snapshot) {
-    axios.get(URL)
-      .then(res => {
-        this.setState((state,props) => {
-          return (
-            { ...this.state,
-              todoList: res.data.data,
-            }
-          )
-        });
-      })
-      .catch(err => {
-        console.error(err)
-      });
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
     axios.get(URL)
       .then(res => {
         this.setState((state,props) => {
@@ -79,6 +74,7 @@ export default class App extends React.Component {
        />
        <Form 
          handleSubmit={ this.handleSubmit }
+         clearCompleted={ this.clearCompleted }
        />
       </div>
     )
