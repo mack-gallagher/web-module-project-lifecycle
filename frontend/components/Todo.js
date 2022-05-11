@@ -11,6 +11,7 @@ export default class Todo extends React.Component {
       <div
         className='Todo'
         id={ this.props.id }
+        onClick={ (evt) => this.props.toggleCompleted(this.props.id) }
       >
         <p>
           { this.props.name } { this.props.completed?'[X]':'[]' }

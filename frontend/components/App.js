@@ -11,6 +11,17 @@ export default class App extends React.Component {
 
     this.state = {};
     this.state.todoList = [];
+    this.toggleCompleted = this.toggleCompleted.bind(this);
+  }
+
+  toggleCompleted(id) {
+    axios.patch(URL+`/${id}`)
+      .then(res => {
+        this.componentDidMount()
+      })
+      .catch(err => {
+        console.error(err);
+      });
   }
 
   componentDidMount(prevProps, prevState, snapshot) {
@@ -34,6 +45,7 @@ export default class App extends React.Component {
       <div className="App">
        <TodoList
          list={ this.state.todoList }
+         toggleCompleted={ this.toggleCompleted }
        />
        <Form />
       </div>

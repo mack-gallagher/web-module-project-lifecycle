@@ -15,6 +15,7 @@ export default class TodoList extends React.Component {
               id={ x.id }
               completed={ x.completed }
               key={ x.id.toString() }
+              toggleCompleted={ this.props.toggleCompleted }
             />
            )
         }
