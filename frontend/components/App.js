@@ -11,16 +11,29 @@ export default class App extends React.Component {
 
     this.state = {};
     this.state.todoList = [];
+
     this.toggleCompleted = this.toggleCompleted.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   toggleCompleted(id) {
     axios.patch(URL+`/${id}`)
       .then(res => {
-        this.componentDidMount()
+        this.componentDidMount();
       })
       .catch(err => {
         console.error(err);
+      });
+  }
+
+  handleSubmit(evt) {
+    evt.preventDefault();
+    axios.post(URL, { name: evt.target[0].value });
+    axios.get(URL)
+      .then(res => {
+        this.setState({
+          todoList: res.data.data,
+          });
       });
   }
 
@@ -40,6 +53,23 @@ export default class App extends React.Component {
       });
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    axios.get(URL)
+      .then(res => {
+        this.setState((state,props) => {
+          return (
+            { ...this.state,
+              todoList: res.data.data,
+            }
+          )
+        });
+      })
+      .catch(err => {
+        console.error(err)
+      });
+  }
+
+
   render() {
     return (
       <div className="App">
@@ -47,7 +77,9 @@ export default class App extends React.Component {
          list={ this.state.todoList }
          toggleCompleted={ this.toggleCompleted }
        />
-       <Form />
+       <Form 
+         handleSubmit={ this.handleSubmit }
+       />
       </div>
     )
   }
